@@ -253,9 +253,6 @@ la logique métier des interfaces techniques (API) et de la persistance.
         \draw[->, thick] (repository) -- (persistence);
         \draw[->, thick] (persistence) -- (database);
     \end{tikzpicture}
-
-    \vspace{0.5cm}
-    \small\textit{Figure 1 : Flux de données et organisation des composants}
 \end{tcolorbox}
 
 \subsection{Modélisation de la Ressource}
@@ -562,37 +559,129 @@ des scripts de test en \textit{JavaScript} pour vérifier les codes de retour et
 \end{minted}
 \end{tcolorbox}
 
-\subsection{Résultats des Tests (Captures d'écran)}
+\subsection{Résultats des Tests (Validation)}
 
 \begin{tcolorbox}[projectbox, title=Console H2 : État de la Base de Données]
     \centering
-    \includegraphics[width=0.9\textwidth]{images/logo.png}
+    \includegraphics[width=0.9\textwidth]{images/h2_console.png}
 \end{tcolorbox}
+La console H2 permet de visualiser en temps réel l'état de la base de données relationnelle en
+mémoire. Comme illustré ci-dessus, les tables sont correctement générées par Hibernate, et les
+données initiales définies dans le fichier \texttt{data.sql} sont bien présentes, confirmant le
+bon fonctionnement de la couche de persistance dès le démarrage.
 
 \begin{tcolorbox}[projectbox, title=Documentation API (Swagger UI)]
     \centering
-    \includegraphics[width=0.9\textwidth]{images/logo.png}
+    \includegraphics[width=0.9\textwidth]{images/swagger_ui.png}
 \end{tcolorbox}
+L'interface Swagger UI offre une vue exhaustive de tous les points d'accès (endpoints) exposés par
+le microservice. Elle permet non seulement de consulter les schémas de données attendus pour
+chaque requête, mais aussi d'exécuter des tests interactifs directement depuis le navigateur,
+facilitant ainsi grandement le travail d'intégration pour les clients de l'API.
 
 \begin{tcolorbox}[projectbox, title=Test : Ajout d'un Plat (Succès 201)]
-    \centering
-    \includegraphics[width=0.9\textwidth]{images/logo.png}
+    \small\textbf{Requête}
+    \begin{minted}{http}
+POST /plats HTTP/1.1
+Content-Type: application/json
+\end{minted}
+    \begin{minted}{json}
+{
+  "nom": "Pasta Pesto",
+  "calories": 450,
+  "prix": 14.5,
+  "coutIngredients": 4.0
+}
+\end{minted}
+    \small\textbf{Réponse}
+    \begin{minted}{http}
+HTTP/1.1 201 Created
+\end{minted}
+    \begin{minted}{json}
+{
+  "id": 7,
+  "nom": "Pasta Pesto",
+  "calories": 450,
+  "prix": 14.5
+}
+\end{minted}
 \end{tcolorbox}
+Cette interaction démontre la création d'une ressource. On observe que l'API retourne un code
+\texttt{201 Created}. Conformément aux exigences, le champ \texttt{coutIngredients} envoyé
+dans la requête est bien masqué dans la réponse JSON, protégeant les données de coût.
 
 \begin{tcolorbox}[projectbox, title=Test : Recherche Métier Healthy (Calories < 500)]
-    \centering
-    \includegraphics[width=0.9\textwidth]{images/logo.png}
+    \small\textbf{Requête}
+    \begin{minted}{http}
+GET /plats/healthy HTTP/1.1
+\end{minted}
+    \small\textbf{Réponse}
+    \begin{minted}{http}
+HTTP/1.1 200 OK
+\end{minted}
+    \begin{minted}{json}
+[
+  { "id": 1, "nom": "Salade César", "calories": 350, "prix": 12.5 },
+  { "id": 3, "nom": "Soupe Potiron", "calories": 150, "prix": 8.0 },
+  { "id": 5, "nom": "Poke Bowl Saumon", "calories": 450, "prix": 14.0 },
+  { "id": 7, "nom": "Pasta Pesto", "calories": 450, "prix": 14.5 }
+]
+\end{minted}
 \end{tcolorbox}
+L'appel au endpoint dédié au menu ``Healthy'' confirme l'efficacité du filtrage. Le serveur
+renvoie exclusivement les plats dont l'apport calorique est inférieur au seuil de 500 calories,
+validant l'implémentation de la requête dérivée dans la couche DAO.
 
 \begin{tcolorbox}[projectbox, title=Test : Validation des Données (Erreur 400)]
-    \centering
-    \includegraphics[width=0.9\textwidth]{images/logo.png}
+    \small\textbf{Requête}
+    \begin{minted}{http}
+POST /plats HTTP/1.1
+\end{minted}
+    \begin{minted}{json}
+{ 
+  "nom": "", 
+  "prix": -10 
+}
+\end{minted}
+    \small\textbf{Réponse}
+    \begin{minted}{http}
+HTTP/1.1 400 Bad Request
+\end{minted}
+    \begin{minted}{json}
+{
+  "status": 400,
+  "errors": {
+    "prix": "Le prix doit être positif",
+    "nom": "Le nom du plat est obligatoire"
+  },
+  "timestamp": "2026-03-26T16:55:53.790"
+}
+\end{minted}
 \end{tcolorbox}
+L'envoi de données invalides déclenche immédiatement une erreur \texttt{400 Bad Request}.
+Le dictionnaire d'erreurs renvoyé par le \mintinline{java}{GlobalExceptionHandler} permet
+au client de corriger précisément les champs posant problème (nom vide et prix négatif).
 
 \begin{tcolorbox}[projectbox, title=Test : Ressource non trouvée (Erreur 404)]
-    \centering
-    \includegraphics[width=0.9\textwidth]{images/logo.png}
+    \small\textbf{Requête}
+    \begin{minted}{http}
+GET /plats/999 HTTP/1.1
+\end{minted}
+    \small\textbf{Réponse}
+    \begin{minted}{http}
+HTTP/1.1 404 Not Found
+\end{minted}
+    \begin{minted}{json}
+{
+  "status": 404,
+  "message": "Plat non trouvé avec id : 999",
+  "timestamp": "2026-03-26T16:56:33.915"
+}
+\end{minted}
 \end{tcolorbox}
+La gestion des identifiants inexistants est illustrée ici. Le service répond par un code
+\texttt{404 Not Found} standard, accompagné d'un message explicatif, assurant une gestion
+robuste des exceptions métier à travers toute l'application.
 
 \section{Gestion du Projet}
 La répartition des tâches a permis une progression quasi parallèle:
