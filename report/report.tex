@@ -5,7 +5,7 @@
 \usepackage[T1]{fontenc}
 \usepackage[french]{babel}
 \usepackage{geometry}
-\geometry{margin=2.5cm}
+\geometry{margin=2cm}
 \usepackage{graphicx}
 \usepackage{xcolor}
 \usepackage{amssymb}
@@ -138,35 +138,39 @@
 \newpage
 
 \section{Introduction}
-L'évolution des architectures logicielles vers le modèle microservices est devenue une norme dans l'industrie moderne
-du développement. Ce paradigme permet de décomposer une application complexe en un ensemble de services petits,
-autonomes et communicants via des protocoles légers. Cette approche facilite non seulement la maintenance
-et le déploiement continu, mais offre également une scalabilité granulaire indispensable aux applications industrielles.
+L'évolution des architectures logicielles vers le modèle microservices est devenue une norme dans
+l'industrie moderne du développement. Ce paradigme permet de décomposer une application complexe en
+un ensemble de services petits, autonomes et communicants via des protocoles légers. Cette approche
+facilite non seulement la maintenance et le déploiement continu, mais offre également une
+scalabilité granulaire indispensable aux applications industrielles.
 
-Dans le cadre du module \textbf{Micro-Services}, notre équipe a été chargée de concevoir et réaliser un microservice
-autonome pour la gestion de la carte d'un restaurant. Ce service est construit sur l'écosystème \textit{Spring Boot}
-et respecte les principes fondamentaux du style architectural \textit{REST}.
+Dans le cadre du module \textbf{Micro-Services}, notre équipe a été chargée de concevoir et réaliser
+un microservice autonome pour la gestion de la carte d'un restaurant. Ce service est construit sur
+l'écosystème \textit{Spring Boot} et respecte les principes fondamentaux du style architectural
+\textit{REST}.
 
-Ce rapport présente les étapes clés de la réalisation de ce projet, depuis la conception architecturale jusqu'à
-la mise en \oe{}uvre technique. Nous détaillerons la structure du projet, l'implémentation des différentes couches
-logicielles, ainsi que les phases de validation et de test.
+Ce rapport présente les étapes clés de la réalisation de ce projet, depuis la conception
+architecturale jusqu'à la mise en \oe{}uvre technique. Nous détaillerons la structure du projet,
+l'implémentation des différentes couches logicielles, ainsi que les phases de validation et de test.
 
 \section{Cahier des Charges}
 \subsection{Objectifs du Projet}
-L'objectif principal est de fournir une solution robuste pour la gestion des plats d'un restaurant. Le système doit
-permettre aux gestionnaires de manipuler la carte de manière intuitive tout en garantissant l'intégrité des
-données métiers. L'utilisation de \textit{Spring Boot} a été imposée pour sa capacité à produire des applications
-``production-ready'' avec un minimum de configuration manuelle.
+L'objectif principal est de fournir une solution robuste pour la gestion des plats d'un restaurant.
+Le système doit permettre aux gestionnaires de manipuler la carte de manière intuitive tout en
+garantissant l'intégrité des données métiers. L'utilisation de \textit{Spring Boot} a été imposée
+pour sa capacité à produire des applications ``production-ready'' avec un minimum de configuration
+manuelle.
 
 \subsection{Exigences Fonctionnelles}
-Le microservice doit supporter l'ensemble des opérations \textit{CRUD} (Create, Read, Update, Delete) sur la
-ressource \mintinline{java}{Plat} :
+Le microservice doit supporter l'ensemble des opérations \textit{CRUD} (Create, Read, Update, Delete)
+sur la ressource \mintinline{java}{Plat} :
 \begin{itemize}
     \item \textbf{Ajout} : Insertion de nouveaux plats via \texttt{POST} avec validation des prix.
     \item \textbf{Consultation} : Récupération globale ou spécifique par identifiant unique (\texttt{ID}).
     \item \textbf{Mise à jour} : Modification des propriétés d'un plat existant via \texttt{PUT}.
     \item \textbf{Suppression} : Retrait définitif d'un plat via \texttt{DELETE}.
-    \item \textbf{Recherche Métier} : Un endpoint spécifique pour filtrer les plats ``Healthy'' (moins de 500 calories).
+    \item \textbf{Recherche Métier} : Un endpoint spécifique pour filtrer les plats ``Healthy''
+          (moins de 500 calories).
 \end{itemize}
 
 \subsection{Contraintes Techniques}
@@ -228,7 +232,7 @@ la logique métier des interfaces techniques (API) et de la persistance.
 
 \begin{tcolorbox}[projectbox, title=Flux de Données et Composants]
     \centering
-    \begin{tikzpicture}[node distance=2.5cm, auto, >=stealth]
+    \begin{tikzpicture}[node distance=2cm, auto, >=stealth]
         % Styles
         \tikzset{external/.style={rectangle, draw=primary!50, fill=primary!5, text width=2.5cm, text centered, rounded corners, minimum height=1cm}}
         \tikzset{port/.style={rectangle, draw=primary!80, fill=primary!10, text width=2cm, text centered, rounded corners, minimum height=0.8cm}}

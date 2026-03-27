@@ -14,7 +14,7 @@ public class Plat {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "Le nom du plat est obligatoire entrer le")
+    @NotBlank(message = "Le nom du plat est obligatoire")
     private String nom;
     private int calories;
     @Positive(message = "Le prix doit être positif")
